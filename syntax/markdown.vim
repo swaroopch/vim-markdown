@@ -68,7 +68,7 @@ execute 'syn region mkdURL matchgroup=mkdDelimiter   start="("     end=")"  cont
 execute 'syn region mkdLink matchgroup=mkdDelimiter  start="\\\@<!!\?\[\ze[^]\n]*\n\?[^]\n]*\][[(]" end="\]" contains=@mkdNonListItem,@Spell nextgroup=mkdURL,mkdID skipwhite' . s:concealends
 
 " [[linked-resource]] | [[link-text|linked-resource]]
-" https://github.com/gollum/gollum/wiki#tags
+" https://github.com/gollum/gollum/wiki#link-tag
 " TODO Handle link-text
 execute 'syn region gollumLink start="\[\[" end="\]\]" contained oneline' . s:conceal
 

@@ -735,6 +735,59 @@ function! s:MapNotHasmapto(lhs, rhs)
     endif
 endfunction
 
+" https://github.com/gollum/gollum/wiki#link-tag
+if !exists('*s:OpenGollumLink')
+    function s:OpenGollumLink()
+        let l:lnum = line('.')
+        let l:col = col('.')
+        let l:syn = synIDattr(synID(l:lnum, l:col, 1), 'name')
+        if l:syn ==# 'gollumLink'
+            let [l:left, l:right] = <sid>FindCornersOfSyntax(l:lnum, l:col)
+            let l:url = getline(l:lnum)[l:left - 1 : l:right - 1]
+            " remove start and end pattern
+            let l:content = trim(l:url, '[]', 0)
+            let l:parts = split(l:content, '|')
+            if len(l:parts) == 1
+                let l:filename = get(l:parts, 0)
+            elseif len(l:parts) == 2
+                let l:filename = get(l:parts, 1)
+            else
+                echomsg "TODO Don't know how to handle with more than one `|` in the gollumLink"
+                return 1
+            endif
+
+            if strpart(l:filename, 0, 4) == 'http'
+                call s:VersionAwareNetrwBrowseX(l:filename)
+                return 0
+            endif
+
+            if matchstr(l:filename, '\.') == ''
+                let l:is_markdown = 1
+                let l:filename = l:filename . '.md'
+            else
+                let l:is_markdown = 0
+            endif
+
+            if strpart(l:filename, 0, 1) == '/'
+                let l:filename = '~/notes' . l:filename
+            else
+                let l:filename = fnameescape(fnamemodify(expand('%:h') . '/' . l:filename, ':.'))
+            endif
+
+            if l:is_markdown
+                execute 'edit ' . l:filename
+            else
+                call s:VersionAwareNetrwBrowseX(l:filename)
+                return 0
+            endif
+        else
+            echomsg 'The cursor is not on a link.'
+        endif
+    endfunction
+endif
+
+command! -buffer OpenGollumLink call s:OpenGollumLink()
+
 call <sid>MapNormVis('<Plug>Markdown_MoveToNextHeader', '<sid>MoveToNextHeader')
 call <sid>MapNormVis('<Plug>Markdown_MoveToPreviousHeader', '<sid>MoveToPreviousHeader')
 call <sid>MapNormVis('<Plug>Markdown_MoveToNextSiblingHeader', '<sid>MoveToNextSiblingHeader')
