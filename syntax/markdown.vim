@@ -72,6 +72,9 @@ execute 'syn region mkdLink matchgroup=mkdDelimiter  start="\\\@<!!\?\[\ze[^]\n]
 " TODO Handle link-text
 execute 'syn region gollumLink start="\[\[" end="\]\]" contained oneline' . s:conceal
 
+" https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark
+execute 'syn region htmlMarkTag start="<mark>" end="<\/mark>" contained' . s:conceal
+
 " Autolink without angle brackets.
 " mkd  inline links:      protocol     optional  user:pass@  sub/domain                    .com, .co.uk, etc         optional port   path/querystring/hash fragment
 "                         ------------ _____________________ ----------------------------- _________________________ ----------------- __
@@ -91,18 +94,18 @@ syn region mkdLinkTitle matchgroup=mkdDelimiter start=+'+     end=+'+  contained
 syn region mkdLinkTitle matchgroup=mkdDelimiter start=+(+     end=+)+  contained
 
 "HTML headings
-syn region htmlH1       matchgroup=mkdHeading     start="^\s*#"                   end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn region htmlH2       matchgroup=mkdHeading     start="^\s*##"                  end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn region htmlH3       matchgroup=mkdHeading     start="^\s*###"                 end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn region htmlH4       matchgroup=mkdHeading     start="^\s*####"                end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn region htmlH5       matchgroup=mkdHeading     start="^\s*#####"               end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn region htmlH6       matchgroup=mkdHeading     start="^\s*######"              end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn match  htmlH1       /^.\+\n=\+$/ contains=mkdLink,mkdInlineURL,@Spell,gollumLink
-syn match  htmlH2       /^.\+\n-\+$/ contains=mkdLink,mkdInlineURL,@Spell,gollumLink
+syn region htmlH1       matchgroup=mkdHeading     start="^\s*#"                   end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn region htmlH2       matchgroup=mkdHeading     start="^\s*##"                  end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn region htmlH3       matchgroup=mkdHeading     start="^\s*###"                 end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn region htmlH4       matchgroup=mkdHeading     start="^\s*####"                end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn region htmlH5       matchgroup=mkdHeading     start="^\s*#####"               end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn region htmlH6       matchgroup=mkdHeading     start="^\s*######"              end="$" contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn match  htmlH1       /^.\+\n=\+$/ contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
+syn match  htmlH2       /^.\+\n-\+$/ contains=mkdLink,mkdInlineURL,@Spell,gollumLink,htmlMarkTag
 
 "define Markdown groups
 syn match  mkdLineBreak    /  \+$/
-syn region mkdBlockquote   start=/^\s*>/                   end=/$/ contains=mkdLink,mkdInlineURL,mkdLineBreak,@Spell,gollumLink
+syn region mkdBlockquote   start=/^\s*>/                   end=/$/ contains=mkdLink,mkdInlineURL,mkdLineBreak,@Spell,gollumLink,htmlMarkTag
 execute 'syn region mkdCode matchgroup=mkdCodeDelimiter start=/\(\([^\\]\|^\)\\\)\@<!`/                     end=/`/'  . s:concealcode
 execute 'syn region mkdCode matchgroup=mkdCodeDelimiter start=/\(\([^\\]\|^\)\\\)\@<!``/ skip=/[^`]`[^`]/   end=/``/' . s:concealcode
 execute 'syn region mkdCode matchgroup=mkdCodeDelimiter start=/^\s*\z(`\{3,}\)[^`]*$/                       end=/^\s*\z1`*\s*$/'            . s:concealcode
@@ -160,7 +163,7 @@ if get(g:, 'vim_markdown_strikethrough', 0)
     HtmlHiLink mkdStrike        htmlStrike
 endif
 
-syn cluster mkdNonListItem contains=@htmlTop,htmlItalic,htmlBold,htmlBoldItalic,mkdFootnotes,mkdInlineURL,mkdLink,mkdLinkDef,mkdLineBreak,mkdBlockquote,mkdCode,mkdRule,htmlH1,htmlH2,htmlH3,htmlH4,htmlH5,htmlH6,mkdMath,mkdStrike,gollumLink
+syn cluster mkdNonListItem contains=@htmlTop,htmlItalic,htmlBold,htmlBoldItalic,mkdFootnotes,mkdInlineURL,mkdLink,mkdLinkDef,mkdLineBreak,mkdBlockquote,mkdCode,mkdRule,htmlH1,htmlH2,htmlH3,htmlH4,htmlH5,htmlH6,mkdMath,mkdStrike,gollumLink,htmlMarkTag
 
 "highlighting for Markdown groups
 HtmlHiLink mkdString        String
@@ -183,6 +186,7 @@ HtmlHiLink mkdLinkDefTarget mkdURL
 HtmlHiLink mkdLinkTitle     htmlString
 HtmlHiLink mkdDelimiter     Delimiter
 HtmlHiLink gollumLink       htmlLink
+HtmlHiLink htmlMarkTag      Search
 
 let b:current_syntax = "mkd"
 
