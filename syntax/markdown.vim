@@ -74,6 +74,8 @@ execute 'syn region gollumLink start="\[\[" end="\]\]" contained oneline' . s:co
 
 " https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark
 execute 'syn region htmlMarkTag start="<mark>" end="<\/mark>" contained' . s:conceal
+" https://squidfunk.github.io/mkdocs-material/reference/formatting/#highlighting-text
+execute 'syn region htmlMarkTag start="==" end="==" contained' . s:conceal
 
 " Autolink without angle brackets.
 " mkd  inline links:      protocol     optional  user:pass@  sub/domain                    .com, .co.uk, etc         optional port   path/querystring/hash fragment
