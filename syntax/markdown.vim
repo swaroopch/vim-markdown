@@ -187,7 +187,7 @@ HtmlHiLink mkdLinkDef       mkdID
 HtmlHiLink mkdLinkDefTarget mkdURL
 HtmlHiLink mkdLinkTitle     htmlString
 HtmlHiLink mkdDelimiter     Delimiter
-HtmlHiLink gollumLink       htmlLink
+HtmlHiLink gollumLink       mkdURL
 HtmlHiLink htmlMarkTag      Search
 
 let b:current_syntax = "mkd"
