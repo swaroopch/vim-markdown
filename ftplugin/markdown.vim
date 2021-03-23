@@ -747,6 +747,8 @@ if !exists('*s:OpenGollumLink')
             " remove start and end pattern
             let l:content = trim(l:url, '[]', 0)
             let l:parts = split(l:content, '|')
+            " grab filename
+            " ignore text, if present
             if len(l:parts) == 1
                 let l:filename = get(l:parts, 0)
             elseif len(l:parts) == 2
@@ -756,11 +758,13 @@ if !exists('*s:OpenGollumLink')
                 return 1
             endif
 
+            " if website, open with Netrw
             if strpart(l:filename, 0, 4) == 'http'
                 call s:VersionAwareNetrwBrowseX(l:filename)
                 return 0
             endif
 
+            " if local file, check if markdown
             if matchstr(l:filename, '\.') == ''
                 let l:is_markdown = 1
                 let l:filename = l:filename . '.md'
@@ -768,12 +772,18 @@ if !exists('*s:OpenGollumLink')
                 let l:is_markdown = 0
             endif
 
+            " resolve file path
             if strpart(l:filename, 0, 1) == '/'
                 let l:filename = '~/notes' . l:filename
             else
                 let l:filename = fnameescape(fnamemodify(expand('%:h') . '/' . l:filename, ':.'))
             endif
 
+            " create intermediate directories
+            let l:dirname = fnamemodify(l:filename, ':p:h')
+            call mkdir(l:dirname, 'p')
+
+            " if markdown, open in nvim, else use netrw
             if l:is_markdown
                 execute 'edit ' . l:filename
             else
