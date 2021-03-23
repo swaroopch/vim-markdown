@@ -765,7 +765,7 @@ if !exists('*s:OpenGollumLink')
             endif
 
             " if local file, check if markdown
-            if matchstr(l:filename, '\.') == ''
+            if strlen(matchstr(l:filename, '\.')) == 0
                 let l:is_markdown = 1
                 let l:filename = l:filename . '.md'
             else
@@ -773,7 +773,9 @@ if !exists('*s:OpenGollumLink')
             endif
 
             " resolve file path
-            if strpart(l:filename, 0, 1) == '/'
+            if strlen(matchstr(l:filename, '\$')) > 0
+                let l:filename = expand(l:filename)
+            elseif strpart(l:filename, 0, 1) == '/'
                 let l:filename = '~/notes' . l:filename
             else
                 let l:filename = fnameescape(fnamemodify(expand('%:h') . '/' . l:filename, ':.'))
