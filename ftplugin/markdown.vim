@@ -777,6 +777,8 @@ if !exists('*s:OpenGollumLink')
                 let l:filename = expand(l:filename)
             elseif strpart(l:filename, 0, 1) == '/'
                 let l:filename = fnameescape(fnamemodify('~/notes' . l:filename, ':.'))
+            elseif strpart(l:filename, 0, 1) == '~'
+                let l:filename = fnameescape(fnamemodify(l:filename, ':.'))
             else
                 let l:filename = fnameescape(fnamemodify(expand('%:h') . '/' . l:filename, ':.'))
             endif
